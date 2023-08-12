@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  .box {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+  }
+  .label {
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div class="label">Box 1</div>
+  <label for="switch">Switch: </label>
+  <input type="checkbox" id="switch"><br>
+  <label for="status">Status: </label>
+  <span id="status">Off</span><br>
+  <label for="voltage">Voltage: </label>
+  <span id="voltage">0 volts</span>
+</div>
+
+<div class="box">
+  <div class="label">Box 2</div>
+  <label for="temperature">Temperature: </label>
+  <span id="temperature">25°C</span><br>
+  <label for="moisture">Moisture: </label>
+  <span id="moisture">50%</span>
+</div>
+
+<div class="box">
+  <div class="label">Box 3</div>
+  <label for="percentage">Percentage: </label>
+  <span id="percentage">0%</span>
+</div>
+
+<script>
+  // Get references to elements
+  const switchElement = document.getElementById('switch');
+  const statusElement = document.getElementById('status');
+  const voltageElement = document.getElementById('voltage');
+  const temperatureElement = document.getElementById('temperature');
+  const moistureElement = document.getElementById('moisture');
+  const percentageElement = document.getElementById('percentage');
+
+  // Update values based on switch state
+  switchElement.addEventListener('change', () => {
+    if (switchElement.checked) {
+      statusElement.textContent = 'On';
+      voltageElement.textContent = '12 volts';
+    } else {
+      statusElement.textContent = 'Off';
+      voltageElement.textContent = '0 volts';
+    }
+  });
+
+  // Initial values
+  temperatureElement.textContent = '25°C';
+  moistureElement.textContent = '50%';
+  percentageElement.textContent = '0%';
+</script>
+
+</body>
+</html>
