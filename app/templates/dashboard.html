@@ -144,10 +144,10 @@
 
     pumpSwitch.addEventListener('change', async () => {
         const switchStatus = pumpSwitch.checked;
-        console.log("Switch is now", switchStatus, "->", this.checked);
+        console.log("Switch is now", switchStatus);
 
         // Send a POST request to the server to update the switch status
-        await fetch(`/switch/${!switchStatus}`, {
+        await fetch(`/switch/${switchStatus}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
