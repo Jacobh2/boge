@@ -23,6 +23,12 @@ class Sensors:
             self.voltage = Voltage()
             self.waterflow = Waterflow()
 
+    def switch(self, on: bool):
+        if self.debug:
+            print("Debug, switching to", on)
+        else:
+            self.relay.switch(on)
+
     def get_random(self):
         return {
             "relay_on": randint(1, 2) == 1,

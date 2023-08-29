@@ -66,8 +66,7 @@
             <p>Local Temperature: <span id="temperatureAir">{{temperature_air}}</span>°C</p>
             {% endif %}
             {% if humidity_air %}
-            {% set humidity_air_p = humidity_air * 100 %}
-            <p>Local Humidity: <span id="humidityAir">{{'%0.1f'| format(humidity_air_p)}}</span>%</p>
+            <p>Local Humidity: <span id="humidityAir">{{'%0.1f'| format(humidity_air)}}</span>%</p>
             {% endif %}
             </p>
             <!-- <a href="#" class="card-link">Card link</a>
@@ -100,8 +99,7 @@
             <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
             <p class="card-text">
               {% if moisture_ground %}
-              {% set moisture_ground_p = moisture_ground * 100 %}
-            <p>Moisture: <span id="moistureGround">{{'%0.1f'| format(moisture_ground_p)}}</span>%</p>
+            <p>Moisture: <span id="moistureGround">{{'%0.1f'| format(moisture_ground)}}</span>%</p>
             {% endif %}
             {% if temperature_ground %}
             <p>Temperature: <span id="temperatureGround">{{temperature_ground}}</span>°C</p>
@@ -143,6 +141,19 @@
         ? '<h5><i class="bi bi-check-circle text-success"></i> Connected</h5>'
         : '<h5><i class="bi bi-x-circle text-danger"></i> Disconnected</h5>';
     };
+
+    pumpSwitch.addEventListener('change', async () => {
+        const switchStatus = switchElement.checked;
+        console.log("Switch is now", switchStatus);
+
+        // Send a POST request to the server to update the switch status
+        await fetch(`/switch/${!switchStatus}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    });
 
     async function updateSensorStatus() {
       try {
