@@ -68,7 +68,10 @@ class Sensors:
         WHERE next_value = 'False'
         """
         cur = self.db.conn.execute(query_timestamp)
-        waterflow_since = cur.fetchone()[0]
+        if result := cur.fetchone():
+            waterflow_since = result[0]
+        else:
+            waterflow_since = None
 
         query = """
         SELECT
@@ -79,7 +82,11 @@ class Sensors:
         GROUP BY name
         """
         cur = self.db.conn.execute(query, (waterflow_since,))
-        waterflow_sum = cur.fetchone()[0]
+        if result := cur.fetchone():
+            waterflow_sum = result[0]
+        else:
+            waterflow_sum = None
+        
         data["waterflow_sum"] = round(waterflow_sum, 1)
         data["waterflow_since"] = waterflow_since
 
