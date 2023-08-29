@@ -3,6 +3,7 @@ services:
   
   app:
     build: app
+    privileged: true
     command:
       - uvicorn
       - main:app
@@ -13,7 +14,8 @@ services:
     environment:
       - VERSION=0.9
       - DEBUG=true
+      - DB_PATH=/tmp/sensors.db
     volumes:
-      - ./db:/usr/app/src/db
+      - ./sensors.db:/tmp/sensors.db
     ports:
       - "8080:8080"
