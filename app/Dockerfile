@@ -14,7 +14,7 @@ COPY --from=build /root/.local /root/.local
 
 ENV PATH=/root/.local/bin:$PATH
 
-RUN apt-get update && apt-get install -y python3-smbus libgpiod2 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libgpiod2 && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 

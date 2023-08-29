@@ -1,9 +1,11 @@
 class Voltage:
     def __init__(self):
         import automationhat
+        self.battery = automationhat.analog.one
+        self.solar = automationhat.analog.three
 
     def get_battery(self) -> float:
-        return automationhat.analog.one.read()
+        return self.battery.read()
 
     def get_solar(self) -> float:
-        return automationhat.analog.two.read()
+        return self.solar.read()

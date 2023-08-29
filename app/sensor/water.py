@@ -34,6 +34,7 @@ class Waterflow(Thread):
         GPIO.add_event_detect(
             self.FLOW_SENSOR_GPIO, GPIO.FALLING, callback=self._count_pulse
         )
+        self.cleanup = lambda: GPIO.cleanup()
 
     def _count_pulse(self, channel):
         self.count += 1
@@ -50,7 +51,7 @@ class Waterflow(Thread):
                 print("Failure to read flow:", e)
                 time.sleep(20)
 
-        GPIO.cleanup()
+        self.cleanup()
 
     def get_flow(self) -> float:
         return self.flow
