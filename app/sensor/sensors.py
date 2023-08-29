@@ -83,11 +83,11 @@ class Sensors:
         """
         cur = self.db.conn.execute(query, (waterflow_since,))
         if result := cur.fetchone():
-            waterflow_sum = result[0]
+            waterflow_sum = round(result[0], 1)
         else:
             waterflow_sum = None
         
-        data["waterflow_sum"] = round(waterflow_sum, 1)
+        data["waterflow_sum"] = waterflow_sum
         data["waterflow_since"] = waterflow_since
 
         return data

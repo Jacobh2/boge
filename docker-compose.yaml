@@ -14,8 +14,8 @@ services:
     environment:
       - VERSION=0.9
       - DEBUG=true
-      - DB_PATH=/tmp/sensors.db
+      - DB_PATH=/tmp/db/sensors.db
     volumes:
-      - ./sensors.db:/tmp/sensors.db
+      - ./db:/tmp/db
     ports:
       - "8080:8080"
