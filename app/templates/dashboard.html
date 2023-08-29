@@ -143,8 +143,8 @@
     };
 
     pumpSwitch.addEventListener('change', async () => {
-        const switchStatus = switchElement.checked;
-        console.log("Switch is now", switchStatus);
+        const switchStatus = pumpSwitch.checked;
+        console.log("Switch is now", switchStatus, "->", this.checked);
 
         // Send a POST request to the server to update the switch status
         await fetch(`/switch/${!switchStatus}`, {
