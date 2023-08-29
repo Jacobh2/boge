@@ -10,7 +10,7 @@ class Moisture:
         self.high_calc = self.HIGH - self.LOW
         self.moisture = automationhat.analog.two
 
-    def get_percentage(self, value: float) -> float:
+    def get_percentage(self) -> float:
         value = self.moisture.read()
         normalize = (value - self.LOW) / self.high_calc
         inverted = 1 - normalize
