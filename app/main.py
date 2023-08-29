@@ -9,7 +9,7 @@ from sensor.sensors import Sensors
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-db = Database(getenv("DB_PATH", "./sensors.db"))
+db = Database(getenv("DB_PATH", "./db/sensors.db"))
 
 sensors = Sensors(db)
 
