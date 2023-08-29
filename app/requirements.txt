@@ -1,4 +1,4 @@
 fastapi
 jinja2
 uvicorn
-adafruit_dht
+#adafruit_dht
