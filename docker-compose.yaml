@@ -13,5 +13,7 @@ services:
     environment:
       - VERSION=0.9
       - DEBUG=true
+    volumes:
+      - sensors.db:/usr/app/src/sensors.db
     ports:
       - "8080:8080"
