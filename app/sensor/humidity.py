@@ -16,8 +16,7 @@ class Humidity:
         except RuntimeError as e:
             self.errors_in_row += 1
             if self.errors_in_row > self.ERROR_IN_ROW_LIMIT:
-                self.errors_in_row = 0
-                raise Exception(f"Failed to read temperature: {e}") from e
+                print("Failed to read temperature after", self.errors_in_row, "-", e)
         return self.prev_temperature
 
     def try_get_humidity(self):
@@ -26,6 +25,5 @@ class Humidity:
         except RuntimeError as e:
             self.errors_in_row += 1
             if self.errors_in_row > self.ERROR_IN_ROW_LIMIT:
-                self.errors_in_row = 0
-                raise Exception(f"Failed to read humidity: {e}") from e
+                print("Failed to read humidity after", self.errors_in_row, "-", e)
         return self.prev_humidity
