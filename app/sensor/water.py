@@ -8,7 +8,9 @@ on values up to at most 8.8 L/min, then we remove the factor
 """
 import time
 from threading import Thread
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Waterflow(Thread):
     # We will most prob take pin 9
@@ -48,7 +50,8 @@ class Waterflow(Thread):
                     self.flow *= self.FACTOR
                 self.count = 0
             except Exception as e:
-                print("Failure to read flow:", e)
+                logger.warning("Failure to read flow: %s", e)
+                logger.info("Will sleep 20 sec before we try again")
                 time.sleep(20)
 
         self.cleanup()

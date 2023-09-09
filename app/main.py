@@ -22,6 +22,12 @@ async def get_sensor_status():
     return sensors.get_dict()
 
 
+@app.get("/health")
+async def get_health_status():
+    sensors.check_sensor_status()
+    return "OK"
+
+
 @app.get("/", response_class=HTMLResponse)
 async def get_index(request: Request):
     data = sensors.get_dict()

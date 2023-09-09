@@ -3,6 +3,7 @@ Collects all sensors
 """
 from os import getenv
 from random import randint
+import logging
 
 from database import Database
 from sensor.humidity import Humidity
@@ -10,6 +11,8 @@ from sensor.moisture import Moisture
 from sensor.relay import Relay
 from sensor.voltage import Voltage
 from sensor.water import Waterflow
+
+logger = logging.getLogger(__name__)
 
 
 class Sensors:
@@ -101,3 +104,6 @@ class Sensors:
     def cleanup_data(self):
         # Remove > 1 month old data
         self.db.cleanup_data()
+
+    def check_sensor_status(self):
+        logger.info("Watersensor thread alive: %s", self.waterflow.is_alive())
