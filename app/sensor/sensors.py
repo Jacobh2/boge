@@ -45,11 +45,11 @@ class Sensors:
         # Get total waterflow since last turn-on of pump
         query_timestamp = """
         SELECT
-            MAX(created_at) AS earliest_timestamp
+            MAX(src_created_at) AS earliest_timestamp
         FROM (
             SELECT
-                created_at, 
-                LEAD(value, 1, 0) OVER (ORDER BY created_at DESC) AS next_value
+                src_created_at, 
+                LEAD(value, 1, 0) OVER (ORDER BY src_created_at DESC) AS next_value
             FROM sensor
             WHERE name = 'relay_on'
         )
@@ -66,7 +66,7 @@ class Sensors:
             sum(cast(value as float))
         FROM sensor
         WHERE name='waterflow'
-        AND created_at >= ?
+        AND src_created_at >= ?
         GROUP BY name
         """
         cur = self.db.conn.execute(query, (waterflow_since,))
