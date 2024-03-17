@@ -12,7 +12,7 @@ services:
       - --port
       - "8080"
     environment:
-      - WEB_CONCURRENCY=2
+      - WEB_CONCURRENCY=1 # Cannot be more than one when we have GPIO stuff
       - VERSION=0.9
       #- DEBUG=true
       - DB_PATH=/tmp/db/sensors.db
