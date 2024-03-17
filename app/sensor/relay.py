@@ -1,8 +1,8 @@
 class Relay:
     def __init__(self):
         import automationhat
-        self.relay = automationhat.relay.one
 
+        self.relay = automationhat.relay.one
 
     def switch(self, on: bool):
         if on:
@@ -12,3 +12,6 @@ class Relay:
 
     def is_on(self) -> bool:
         return self.relay.is_on()
+
+    def get_status(self) -> bool:
+        return True

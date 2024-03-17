@@ -50,9 +50,38 @@ async def get_sensor_status(sensors: Annotated[Sensors, Depends(get_sensors)]):
     return sensors.get_dict()
 
 
+def wants_html_response(accept_header: str) -> bool:
+    try:
+        if not accept_header:
+            return False
+        accepts = accept_header.split(",")
+        if not accepts:
+            return False
+        return "text/html" in accepts
+    except Exception:
+        logger.warning("Failed to figure out if we want html response", exc_info=True)
+
+
 @app.get("/health")
-async def get_health_status(sensors: Annotated[Sensors, Depends(get_sensors)]):
-    sensors.check_sensor_status()
+async def get_health_status(
+    request: Request, sensors: Annotated[Sensors, Depends(get_sensors)]
+):
+    # Check if we're coming from an api call
+    logger.info("Checking health with %s", request.headers.get("Accept"))
+    statuses = sensors.check_sensor_status()
+
+    if wants_html_response(request.headers.get("Accept", "")):
+        data = {}
+        for name, status in statuses.items():
+            data[name] = "Healthy" if status else "Needs Attention"
+            data[f"{name}_class"] = "text-success" if status else "text-danger"
+
+        html = templates.TemplateResponse(
+            "health.html",
+            {"request": request, "version": getenv("VERSION", "unknown"), **data},
+        )
+        return html
+
     return "OK"
 
 

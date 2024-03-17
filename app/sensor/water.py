@@ -35,6 +35,7 @@ class Waterflow(Sensor):
         self.count = 0
         self.flow = 0
         self.running = True
+        self.last_read_ok = False
 
         GPIO.add_event_detect(
             self.FLOW_SENSOR_GPIO, GPIO.FALLING, callback=self._count_pulse
@@ -51,8 +52,10 @@ class Waterflow(Sensor):
                 self.flow = self.count / self.PULSE_FREQUENCY / self.SLEEP_TIME
                 if self.flow < 8.8:
                     self.flow *= self.FACTOR
+                self.last_read_ok = True
                 self.count = 0
             except Exception as e:
+                self.last_read_ok = False
                 logger.warning("Failure to read flow: %s", e)
                 logger.info("Will sleep 20 sec before we try again")
                 time.sleep(20)
@@ -61,3 +64,9 @@ class Waterflow(Sensor):
 
     def get_flow(self) -> float:
         return self.flow
+
+    def get_status(self) -> bool:
+        logger.info(
+            "Water read ok: %s and is alive: %s", self.last_read_ok, self.is_alive()
+        )
+        return self.last_read_ok and self.is_alive()

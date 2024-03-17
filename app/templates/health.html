@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Health</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="bg-light text-center py-3">
+    <div class="container">
+      <h1>Sensor Health</h1>
+      <div id="statusIcon" class="mt-3">
+        <h5><i class="bi bi-check-circle text-success"></i> System Operational</h5>
+      </div>
+    </div>
+  </header>
+
+  <div class="container my-4">
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      <!-- Water Pump Sensor -->
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-water"></i> Water Pump</h5>
+            <p class="card-text">Pump: <span class="{{relay_on_class}}">{{relay_on}}</span></p>
+            <p class="card-text">Waterflow: <span class="{{waterflow_class}}">{{waterflow}}</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Sensor -->
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-cloud-sun"></i> Weather</h5>
+            <p class="card-text">Temperature: <span class="{{temperature_air_class}}">{{temperature_air}}</span></p>
+            <p class="card-text">Humidity: <span class="{{humidity_air_class}}">{{humidity_air}}</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Power Supply Sensor -->
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-sun"></i> Power Supply</h5>
+            <p class="card-text">Battery: <span class="{{voltage_battery_class}}">{{voltage_battery}}</span></p>
+            <p class="card-text">Solar: <span class="{{voltage_solar_class}}">{{voltage_solar}}</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Soil Sensor -->
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-flower1"></i> Soil</h5>
+            <p class="card-text">Moisture: <span class="{{moisture_ground_class}}">{{moisture_ground}}</span></p>
+            <p class="card-text">Temperature: <span class="{{temperature_ground_class}}">{{temperature_ground}}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="bg-light text-center py-3">
+    <div class="container">
+        <p>&copy; 2023 Suorra. All rights reserved. Version {{version}}</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

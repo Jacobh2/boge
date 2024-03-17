@@ -19,6 +19,7 @@ class Moisture(Sensor):
         self.high_calc = self.HIGH - self.LOW
         self.moisture = automationhat.analog.two
         self.value = None
+        self.last_read_ok = False
 
     def get_percentage(self) -> float:
         value = self.moisture.read()
@@ -32,10 +33,15 @@ class Moisture(Sensor):
         while True:
             try:
                 self.value = self.get_percentage()
+                self.last_read_ok = True
             except Exception:
+                self.last_read_ok = False
                 logger.warning("Failed to read moisture", exc_info=True)
             finally:
                 sleep(10)
 
     def get_moisture(self):
         return self.value
+
+    def get_status(self) -> bool:
+        return self.last_read_ok and self.is_alive()

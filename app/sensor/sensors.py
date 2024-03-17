@@ -30,6 +30,8 @@ class Sensors:
             self.waterflow = Waterflow()
 
     def start_all(self):
+        if self.debug:
+            return
         self.humidity.start()
         self.moisture.start()
         self.voltage.start()
@@ -108,15 +110,44 @@ class Sensors:
             "temperature_ground": None,
         }
 
-        logger.info("Sensors read after %s sec", time.time() - time_start)
+        time_sensors = (time.time() - time_start) * 1000
+        time_start = time.time()
 
         waterflow_sum, waterflow_since = self._get_waterflow_data()
         data["waterflow_sum"] = waterflow_sum
         data["waterflow_since"] = waterflow_since
 
-        logger.info("Calculated from db after %s sec", time.time() - time_start)
+        logger.info(
+            "Sensors read after %s ms. Calculated from db after %s ms",
+            time_sensors,
+            (time.time() - time_start) * 1000,
+        )
 
         return data
 
-    def check_sensor_status(self):
-        logger.info("Watersensor thread alive: %s", self.waterflow.is_alive())
+    def check_sensor_status(self) -> dict[str, bool]:
+        if self.debug:
+            logger.info("In debug mode")
+            return {
+                "relay_on": randint(1, 2) == 1,
+                "waterflow": randint(1, 2) == 1,
+                "voltage_battery": randint(1, 2) == 1,
+                "voltage_solar": randint(1, 2) == 1,
+                "temperature_air": randint(1, 2) == 1,
+                "humidity_air": randint(1, 2) == 1,
+                "moisture_ground": randint(1, 2) == 1,
+                "temperature_ground": randint(1, 2) == 1,
+                "waterflow_sum": randint(1, 2) == 1,
+                "waterflow_since": randint(1, 2) == 1,
+            }
+
+        return {
+            "relay_on": self.relay.get_status(),
+            "waterflow": self.waterflow.get_status(),
+            "voltage_battery": self.voltage.get_battery_status(),
+            "voltage_solar": self.voltage.get_solar_status(),
+            "temperature_air": self.humidity.get_temperature_status(),
+            "humidity_air": self.humidity.get_humidity_status(),
+            "moisture_ground": self.moisture.get_status(),
+            "temperature_ground": False,
+        }
