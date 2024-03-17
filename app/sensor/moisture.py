@@ -13,6 +13,7 @@ class Moisture(Sensor):
     HIGH = 4.966
 
     def __init__(self):
+        super().__init__()
         import automationhat
 
         self.high_calc = self.HIGH - self.LOW

@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 class Voltage(Sensor):
     def __init__(self):
+        super().__init__()
         import automationhat
 
         self.battery = automationhat.analog.one

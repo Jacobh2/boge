@@ -26,6 +26,7 @@ class Waterflow(Sensor):
     FACTOR = 1.3
 
     def __init__(self):
+        super().__init__()
         import RPi.GPIO as GPIO
 
         GPIO.setmode(GPIO.BCM)
