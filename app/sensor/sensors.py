@@ -86,23 +86,31 @@ class Sensors:
         }
 
     def get_dict(self) -> dict:
+        logger.info("Reading data values...")
+        time_start = time.time()
         if self.debug:
             return self.get_random()
 
         data = {
             "relay_on": self.relay.is_on(),
             "waterflow": self.waterflow.get_flow(),
-            "voltage_battery": self.voltage.get_battery(),
-            "voltage_solar": self.voltage.get_solar(),
-            "temperature_air": self.humidity.try_get_temperature(),
-            "humidity_air": self.humidity.try_get_humidity(),
-            "moisture_ground": self.moisture.get_percentage(),
+            "voltage_battery": self.voltage.get_battery_value(),
+            "voltage_solar": self.voltage.get_solar_value(),
+            "temperature_air": self.humidity.get_temperature(),
+            "humidity_air": self.humidity.get_humidity(),
+            "moisture_ground": self.moisture.get_moisture(),
             "temperature_ground": None,
         }
+
+        logger.info("Sensors read after %s sec", time.time() - time_start)
 
         waterflow_sum, waterflow_since = self._get_waterflow_data()
         data["waterflow_sum"] = waterflow_sum
         data["waterflow_since"] = waterflow_since
+
+        logger.info("Calculated from db after %s sec", time.time() - time_start)
+
+        return data
 
     def check_sensor_status(self):
         logger.info("Watersensor thread alive: %s", self.waterflow.is_alive())

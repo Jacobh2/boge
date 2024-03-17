@@ -11,10 +11,13 @@ from log import setup_logging, setup_uvicorn_logging
 from settings import Settings
 from contextlib import asynccontextmanager
 from scheduler import Scheduler
+import logging
 
 settings = Settings()
 
 setup_logging(settings)
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -50,7 +53,9 @@ async def get_health_status(sensors: Annotated[Sensors, Depends(get_sensors)]):
 async def get_index(
     request: Request, sensors: Annotated[Sensors, Depends(get_sensors)]
 ):
+    logger.info("About to read sensor values")
     data = sensors.get_dict()
+    logger.info("Returning data %s", data)
     html = templates.TemplateResponse(
         "dashboard.html",
         {"request": request, "version": getenv("VERSION", "unknown"), **data},

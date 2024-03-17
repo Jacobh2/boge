@@ -6,13 +6,15 @@ by approd 23%, so an increase of 30% (factor of 1.3) could
 be applied to be more accurate. This should only be applied
 on values up to at most 8.8 L/min, then we remove the factor
 """
+
+from sensor.sensor import Sensor
 import time
-from threading import Thread
 import logging
 
 logger = logging.getLogger(__name__)
 
-class Waterflow(Thread):
+
+class Waterflow(Sensor):
     # We will most prob take pin 9
     # due to the automation phat used
     FLOW_SENSOR_GPIO = 9
