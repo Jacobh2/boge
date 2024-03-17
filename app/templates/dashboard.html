@@ -6,10 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Boge Dasboard</title>
   <link rel="icon" type="image/x-icon" href="/static/favicon.png">
-  <!-- Link to Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
-  <!-- Option 1: Include in HTML -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
   <style>
     body {
       background-color: #f8f9fa;
@@ -29,6 +28,9 @@
   </header>
 
   <div class="container">
+    <!-- <div style="width:100%;width:600px;">
+      <canvas id="xy-plot"></canvas>
+    </div> -->
     <div class="row justify-content-center align-items-center">
       <div class="col-md-6">
         <div class="card shadow-sm mb-3" style="width: 18rem; margin: 0 auto;">
@@ -49,7 +51,8 @@
             <p>Water flow: <span id="waterFlow">{{waterflow}}</span>L/min</p>
             {% endif %}
             {% if waterflow_sum %}
-            <p>Total: <span id="waterFlowSum">{{waterflow_sum}}</span>L since <span id="waterflowSince">{{waterflow_since}}</span></p>
+            <p>Total: <span id="waterFlowSum">{{waterflow_sum}}</span>L since <span
+                id="waterflowSince">{{waterflow_since}}</span></p>
             {% endif %}
             </p>
             <!-- <a href="#" class="card-link">Card link</a> -->
@@ -116,104 +119,11 @@
 
   <footer class="bg-light text-center py-3">
     <div class="container">
-      <p>&copy; 2023 Suorra. All rights reserved. Version {{version}}</p>
+      <p id="info">&copy; 2023 Suorra. All rights reserved. Version {{version}}. Auto-refresh every</p>
     </div>
   </footer>
 
-  <script>
-    const pumpSwitch = document.getElementById("pumpSwitch");
-    const pumpStatus = document.getElementById("pumpStatus");
-    const waterFlow = document.getElementById("waterFlow");
-    const waterFlowSum = document.getElementById("waterFlowSum");
-    const waterFlowSince = document.getElementById("waterflowSince");
-
-    const temperatureAir = document.getElementById("temperatureAir");
-    const humidityAir = document.getElementById("humidityAir");
-
-    const voltageBattery = document.getElementById("voltageBattery");
-    const voltageSolar = document.getElementById("voltageSolar");
-
-    const moistureGround = document.getElementById("moistureGround");
-    const temperatureGround = document.getElementById("temperatureGround");
-
-    const updateStatusIcon = (isSuccessful) => {
-      const statusIcon = document.getElementById('statusIcon');
-      statusIcon.innerHTML = isSuccessful
-        ? '<h5><i class="bi bi-check-circle text-success"></i> Connected</h5>'
-        : '<h5><i class="bi bi-x-circle text-danger"></i> Disconnected</h5>';
-    };
-
-    pumpSwitch.addEventListener('change', async () => {
-        const switchStatus = pumpSwitch.checked;
-        console.log("Switch is now", switchStatus);
-
-        // Send a POST request to the server to update the switch status
-        await fetch(`/switch/${switchStatus}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-    });
-
-    async function updateSensorStatus() {
-      try {
-        const response = await fetch('/status');
-
-        updateStatusIcon(response.ok);
-
-        const sensorStatus = await response.json();
-        console.log("Status:", sensorStatus);
-
-        if (sensorStatus.relay_on) {
-          pumpSwitch.checked = true;
-          pumpStatus.innerHTML = "ON";
-        } else {
-          pumpSwitch.checked = false;
-          pumpStatus.innerHTML = "OFF";
-        }
-
-        if (waterFlow) {
-          waterFlow.innerHTML = sensorStatus.waterflow;
-        }
-        if (waterFlowSum) {
-          waterFlowSum.innerHTML = sensorStatus.waterflow_sum;
-        }
-        if (waterFlowSince) {
-          waterFlowSince.innerHTML = sensorStatus.waterflow_since;
-        }
-        if (temperatureAir) {
-          temperatureAir.innerHTML = sensorStatus.temperature_air;
-        }
-        if (humidityAir) {
-          humidityAir.innerHTML = sensorStatus.humidity_air;
-        }
-
-        if (voltageBattery) {
-          voltageBattery.innerHTML = sensorStatus.voltage_battery;
-        }
-
-        if (voltageSolar) {
-          voltageSolar.innerHTML = sensorStatus.voltage_solar;
-        }
-
-        if (moistureGround) {
-          moistureGround.innerHTML = sensorStatus.moisture_ground;
-        }
-
-        if (temperatureGround) {
-          temperatureGround.innerHTML = sensorStatus.temperature_ground;
-        }
-
-      } catch (e) {
-        console.log("Failed to connect to API: ", e);
-        updateStatusIcon(false);
-      }
-
-    }
-
-    setInterval(updateSensorStatus, 2000);  // Update every 2 seconds
-  </script>
+  <script src="/static/dashboard.js"> </script>
 </body>
 
 </html>

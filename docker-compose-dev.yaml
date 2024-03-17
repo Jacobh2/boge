@@ -2,13 +2,17 @@ version: '3'
 services:
   
   app:
-    build: app
+    build:
+      context: app
+      dockerfile: Dockerfile.x86
     command:
       - uvicorn
       - main:app
       - --host
       - "0.0.0.0"
       - --reload
+      - --port
+      - "8080"
     environment:
       - VERSION=0.9
       - DEBUG=true
@@ -26,3 +30,11 @@ services:
       - ./templates/dashboard.html:/usr/share/nginx/html/dashboard.html:ro
       - ./templates/index.html:/usr/share/nginx/html/index.html:ro
       - ./.htpasswd:/etc/nginx/.htpasswd:ro
+
+  grafana:
+    image: grafana/grafana-oss:10.1.2
+    platform: linux/arm64/v7
+    ports:
+      - 3000:3000
+    volumes:
+      - ./app:/tmp
