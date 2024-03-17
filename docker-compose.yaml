@@ -12,6 +12,7 @@ services:
       - --port
       - "8080"
     environment:
+      - WEB_CONCURRENCY=2
       - VERSION=0.9
       #- DEBUG=true
       - DB_PATH=/tmp/db/sensors.db
