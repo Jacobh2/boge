@@ -23,8 +23,15 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 
-    scheduler = Scheduler(get_sensors(), get_db())
+    logger.info("Starting all sensors...")
+    sensors = get_sensors()
+    sensors.start_all()
+
+    logger.info("Sensors started, starting scheduler")
+    scheduler = Scheduler(sensors, get_db())
     scheduler.start()
+
+    logger.info("Scheduler started, starting app")
 
     yield
 

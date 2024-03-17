@@ -29,6 +29,12 @@ class Sensors:
             self.voltage = Voltage()
             self.waterflow = Waterflow()
 
+    def start_all(self):
+        self.humidity.start()
+        self.moisture.start()
+        self.voltage.start()
+        self.waterflow.start()
+
     def switch(self, on: bool):
         if self.debug:
             logger.info("Debugging switch turned to %s", on)
