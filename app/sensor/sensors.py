@@ -8,7 +8,7 @@ from random import randint
 import logging
 import time
 
-from sensor.humidity import Humidity
+from sensor.humidity import get_humidity
 from sensor.moisture import Moisture
 from sensor.relay import Relay
 from sensor.voltage import Voltage
@@ -23,7 +23,8 @@ class Sensors:
         self.db = db
         self.debug = getenv("DEBUG") == "true"
         if not self.debug:
-            self.humidity = Humidity()
+            logger.info("Initialising sensors")
+            self.humidity = get_humidity()
             self.moisture = Moisture()
             self.relay = Relay()
             self.voltage = Voltage()

@@ -1,3 +1,4 @@
+from functools import lru_cache
 from sensor.sensor import Sensor
 from time import sleep
 import logging
@@ -82,3 +83,8 @@ class Humidity(Sensor):
             self.is_alive(),
         )
         return self.last_humidity_read_ok == 0 and self.is_alive()
+
+
+@lru_cache()
+def get_humidity() -> Humidity:
+    return Humidity()
