@@ -4,7 +4,7 @@ services:
     image: eclipse-mosquitto
     container_name: mqtt
     restart: always
-    network: host
+    network_mode: host
 
   home:
     image: ghcr.io/home-assistant/home-assistant:stable
@@ -16,4 +16,4 @@ services:
       - ./home_assistant_config:/config
       - /run/dbus:/run/dbus:ro
     restart: always
-    network: host
+    network_mode: host
