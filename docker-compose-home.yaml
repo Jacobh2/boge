@@ -24,7 +24,7 @@ services:
 
   relay:
     build: sensors
-    command: [tail, -f, /dev/null]
+    command: [python, -m, mqtt.mqtt]
     privileged: true
     restart: always
     environment:
