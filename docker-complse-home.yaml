@@ -1,0 +1,19 @@
+version: "3"
+services:
+  mqtt:
+    image: eclipse-mosquitto
+    name: mqtt
+    restart: always
+    network: host
+
+  home:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    name: homeassistant
+    privileged: true
+    environment:
+      - TZ=Europe/Stockholm
+    volumes:
+      - ./home_assistant_config:/config
+      - /run/dbus:/run/dbus:ro
+    restart: always
+    network: host

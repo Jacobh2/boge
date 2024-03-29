@@ -35,3 +35,7 @@ htpasswd -nb username password
 ```bash
 ln -s /etc/nginx/sites-available/www.example.org.conf /etc/nginx/sites-enabled/
 ```
+
+## To map multiple ports:
+
+

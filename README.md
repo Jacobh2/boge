@@ -53,3 +53,21 @@ Can be found [here](./wiring.md)
 ![](./web.png)
 
 ![](./mobile.png)
+
+## Connect ssh
+
+1. ssh into bastion host on @sshserver.local
+
+2. From that, ssh via tunnel on @localhost -p <port>
+
+## Home assistant setup
+
+configuration.yaml needs this:
+
+```
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+```
