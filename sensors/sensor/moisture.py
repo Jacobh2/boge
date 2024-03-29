@@ -1,47 +1,70 @@
 from sensor.sensor import Sensor
+from settings import Settings
+from mqtt import MQTT
 from time import sleep
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class Moisture(Sensor):
-    # Approx values for when in air and in water.
-    # Low = The value when in water
-    # High = The value when dry in air
-    LOW = 2.0
-    HIGH = 4.966
+class Moisture(MQTT, Sensor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, settings: Settings):
+        super().__init__(settings)
+        Sensor.__init__(self)
         import automationhat
 
+        self.HIGH = settings.MOISTURE_HIGH
+        self.LOW = settings.MOISTURE_LOW
+        self.rounding = settings.MOISTURE_ROUND
         self.high_calc = self.HIGH - self.LOW
-        self.moisture = automationhat.analog.two
-        self.value = None
-        self.last_read_ok = False
+        self.moisture = automationhat.analog[settings.MOISTURE_INPUT]
+        self.running = True
 
-    def get_percentage(self) -> float:
-        value = self.moisture.read()
-        normalize = (value - self.LOW) / self.high_calc
-        inverted = 1 - normalize
-        percentage = inverted * 100
-        rounded = round(percentage, 2)
-        return max(min(rounded, 100.0), 0.0)
+
+    def get_percentage(self) -> float | None:
+        try:
+            value = self.moisture.read()
+            normalize = (value - self.LOW) / self.high_calc
+            inverted = 1 - normalize
+            percentage = inverted * 100
+            rounded = round(percentage, self.rounding)
+            return max(min(rounded, 100.0), 0.0)
+        except Exception:
+            logger.warning("Failed to read moisture", exc_info=True)
+        return None
 
     def run(self):
-        while True:
+        self.connect()
+        while self.running:
             try:
-                self.value = self.get_percentage()
-                self.last_read_ok = True
+                value = self.get_percentage()
+                # Publish!
+                self.publish(value)
+                self.retries = 0
             except Exception:
-                self.last_read_ok = False
                 logger.warning("Failed to read moisture", exc_info=True)
+                self.retries += 1
             finally:
                 sleep(10)
 
-    def get_moisture(self):
-        return self.value
+            if self.retries > self.max_retries:
+                self.running = False
 
-    def get_status(self) -> bool:
-        return self.last_read_ok and self.is_alive()
+        raise Exception(f"Have retried {self.retries} times, will crash and let docker restart us!")
+
+
+if __name__ == "__main__":
+    from log import setup_logging
+
+    settings = Settings()
+
+    setup_logging(settings)
+
+    switch = Moisture(settings)
+
+    logger.info("Starting moisture")
+    switch.start()
+
+    logger.info("Waiting for join")
+    switch.join()

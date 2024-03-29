@@ -1,60 +1,70 @@
+from mqtt import MQTT
 from sensor.sensor import Sensor
+from settings import Settings
 from time import sleep
 import logging
 
 logger = logging.getLogger(__name__)
 
 
-class Voltage(Sensor):
-    def __init__(self):
-        super().__init__()
+class Voltage(MQTT, Sensor):
+    def __init__(self, settings: Settings):
+        super().__init__(settings)
+        Sensor.__init__(self)
         import automationhat
 
         self.battery = automationhat.analog.one
         self.solar = automationhat.analog.three
 
-        self.battery_value = None
-        self.solar_value = None
+        self.running = True
 
-        self.last_battery_value_ok = False
-        self.last_solar_value_ok = False
+    def get_battery(self) -> float | None:
+        try:
+            return self.battery.read()
+        except Exception:
+            logger.warning("Failed to read battery voltage", exc_info=True)
+        return None
 
-    def get_battery(self) -> float:
-        return self.battery.read()
-
-    def get_solar(self) -> float:
-        return self.solar.read()
+    def get_solar(self) -> float | None:
+        try:
+            return self.solar.read()
+        except Exception:
+            logger.warning("Failed to read solar voltage", exc_info=True)
+        return None
 
     def run(self):
-
-        while True:
+        self.connect()
+        while self.running:
             try:
-                self.battery_value = self.get_battery()
-                self.last_battery_value_ok = True
+                battery_value = self.get_battery()
+                sleep(0.5)
+                solar_value = self.get_solar()
+                # Publish
+                self.publish({"battery": battery_value, "solar": solar_value})
+                self.retries = 0
             except Exception:
-                self.last_battery_value_ok = False
-                logger.warning("Failed to read battery voltage", exc_info=True)
-
-            try:
-                sleep(5)
-                self.solar_value = self.get_solar()
-                self.last_solar_value_ok = True
-            except Exception:
-                logger.warning("Failed to read voltage", exc_info=True)
-                self.last_solar_value_ok = False
+                logger.warning("Failed to read value", exc_info=True)
+                self.retries += 1
             finally:
-                sleep(20)
+                sleep(10)
 
-    def get_battery_value(self):
-        return self.battery_value
+            if self.retries > self.max_retries:
+                self.running = False
 
-    def get_solar_value(self):
-        return self.solar_value
+        raise Exception(f"Have retried {self.retries} times, will crash and let docker restart us!")
 
-    def get_battery_status(self) -> bool:
-        logger.info("Battery read ok: %s and is alive: %s", self.last_battery_value_ok, self.is_alive())
-        return self.last_battery_value_ok and self.is_alive()
 
-    def get_solar_status(self) -> bool:
-        logger.info("Solar read ok: %s and is alive: %s", self.last_solar_value_ok, self.is_alive())
-        return self.last_solar_value_ok and self.is_alive()
+if __name__ == "__main__":
+    from log import setup_logging
+
+    settings = Settings()
+
+    setup_logging(settings)
+
+    switch = Voltage(settings)
+
+    logger.info("Starting voltage")
+    switch.start()
+
+    logger.info("Waiting for join")
+    switch.join()

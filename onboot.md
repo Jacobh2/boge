@@ -4,6 +4,8 @@
 
 3. setup rule
 
+This is called `ssh_reverse_proxy.service` on Boge
+
 ```bash
 [Unit]
 Description=Open a reverse proxy for SSH

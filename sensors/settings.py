@@ -12,6 +12,16 @@ class Settings(BaseSettings):
 
     VERSION: str = "?"
 
+    DEVICE_ID: str = ""
+
+    MOISTURE_INPUT: int = 1
+    # Approx values for when in air and in water.
+    # Low = The value when in water
+    # High = The value when dry in air
+    MOISTURE_HIGH: float = 4.966
+    MOISTURE_LOW: float = 2.0
+    MOISTURE_ROUND: int = 10
+
     MQTT_BROKER: str
     MQTT_PORT: int
     MQTT_TOPIC: str

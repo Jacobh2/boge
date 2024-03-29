@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This script is run from boge
+
 while true
 do
 	echo "Check if we can resolve URL"
@@ -30,7 +32,7 @@ do
 	echo "Starting tunnle in 10 sec"
 	sleep 10
 	echo "Starting tunnle now"
-	ssh -v -o ServerAliveInterval=60 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -N -R 9091:0.0.0.0:22 jacobhagstedt@<domain> -p <port>
+	ssh -v -o ServerAliveInterval=60 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -N -R 9091:0.0.0.0:22  <domain> -p <port>
 	echo "Tunnle failed, sleep 1 minute and try again"
 	sleep 55
 	echo "Starting again in 5 sec"

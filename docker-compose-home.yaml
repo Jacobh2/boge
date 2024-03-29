@@ -10,6 +10,22 @@ services:
     restart: always
     network_mode: host
 
+  influxdb:
+    image: influxdb:2.7.5-alpine
+    container_name: influxdb
+    volumes:
+      - ./influxdb/data:/var/lib/influxdb2
+      - ./influxdb/config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=sensors
+      - DOCKER_INFLUXDB_INIT_ORG=home_assistant
+      - DOCKER_INFLUXDB_INIT_BUCKET=Home Assistant
+    env_file:
+      - .env
+    restart: always
+    network_mode: host
+
   home:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: homeassistant
@@ -22,9 +38,10 @@ services:
     restart: always
     network_mode: host
 
-  relay:
+  switch:
     build: sensors
-    command: [python, -m, mqtt.mqtt]
+    container_name: switch
+    command: [python, -m, sensor.switch]
     privileged: true
     restart: always
     environment:
@@ -32,6 +49,86 @@ services:
       - MQTT_PORT=1883
       - MQTT_TOPIC=homeassistant/switch/pump_001
       - MQTT_CLIENT_ID=pump_001
+      - MQTT_USER=sensors
+    env_file:
+      - .env
+    network_mode: host
+
+  voltage:
+    build: sensors
+    container_name: voltage
+    command: [python, -m, sensor.voltage]
+    privileged: true
+    restart: always
+    environment:
+      - MQTT_BROKER=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=homeassistant/sensor/voltage_001
+      - MQTT_CLIENT_ID=voltage_001
+      - MQTT_USER=sensors
+    env_file:
+      - .env
+    network_mode: host
+
+  water:
+    build: sensors
+    container_name: water
+    command: [python, -m, sensor.water]
+    privileged: true
+    restart: always
+    environment:
+      - MQTT_BROKER=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=homeassistant/sensor/water_001
+      - MQTT_CLIENT_ID=water_001
+      - MQTT_USER=sensors
+    env_file:
+      - .env
+    network_mode: host
+
+  moisture:
+    build: sensors
+    container_name: moisture
+    command: [python, -m, sensor.moisture]
+    privileged: true
+    restart: always
+    environment:
+      - MQTT_BROKER=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=homeassistant/sensor/moisture_001
+      - MQTT_CLIENT_ID=moisture_001
+      - MQTT_USER=sensors
+    env_file:
+      - .env
+    network_mode: host
+
+  humidity:
+    build: sensors
+    container_name: humidity
+    command: [python, -m, sensor.humidity]
+    privileged: true
+    restart: always
+    environment:
+      - MQTT_BROKER=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=homeassistant/sensor/humidity_001
+      - MQTT_CLIENT_ID=humidity_001
+      - MQTT_USER=sensors
+    env_file:
+      - .env
+    network_mode: host
+
+  sms_sensor:
+    build: sensors
+    container_name: sms
+    command: [python, -m, sensor.delete_sms]
+    privileged: true
+    restart: always
+    environment:
+      - MQTT_BROKER=localhost
+      - MQTT_PORT=1883
+      - MQTT_TOPIC=homeassistant/custom/zte_modem_sms
+      - MQTT_CLIENT_ID=zte_modem_sms
       - MQTT_USER=sensors
     env_file:
       - .env

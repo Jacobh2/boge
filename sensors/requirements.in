@@ -4,3 +4,4 @@ adafruit-circuitpython-dht
 smbus
 automationhat
 paho-mqtt
+requests

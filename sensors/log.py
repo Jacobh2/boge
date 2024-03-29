@@ -2,7 +2,6 @@ import logging
 import logging.handlers
 from settings import Settings
 import sys
-import uvicorn
 
 
 def setup_logging(settings: Settings):
@@ -31,14 +30,3 @@ def setup_logging(settings: Settings):
 
     # Set the custom exception hook as the default one
     sys.excepthook = log_uncaught_exceptions
-
-
-def setup_uvicorn_logging():
-    root_logger = logging.getLogger()
-
-    uvicorn_server_logger = logging.getLogger("uvicorn.error")
-    uvicorn_access_logger = logging.getLogger("uvicorn.access")
-
-    # Update the Uvicorn loggers to use the root logger's handlers
-    uvicorn_server_logger.handlers = root_logger.handlers
-    uvicorn_access_logger.handlers = root_logger.handlers

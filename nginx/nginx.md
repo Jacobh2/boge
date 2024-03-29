@@ -1,5 +1,11 @@
 # Nginx config
 
+## Install
+
+Use the install.sh script and the prepare.sh script
+
+##
+
 the ssh server is responsible for terminating SSL. This is done since it is the one the domain points to.
 
 Config is found in `nginx/*.conf` files.
@@ -27,7 +33,7 @@ htpasswd -nb username password
 ## Verify nginx config
 
 ```bash
-
+sudo nginx -t
 ```
 
 ## Activate site

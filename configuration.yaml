@@ -1,0 +1,118 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+homeassistant:
+  external_url: https://icehack.asuscomm.com
+  internal_url: http://192.168.1.220:8123
+
+recorder:
+  purge_keep_days: 10
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+    - 192.168.1.233
+
+influxdb:
+  api_version: 2
+  host: localhost
+  port: 8086
+  ssl: false
+  token: 
+  database: home_assistant
+  organization: home_assistant
+  precision: s
+  default_measurement: state
+  max_retries: 3
+  tags:
+    source: HA
+  tags_attributes:
+    - friendly_name
+
+
+mqtt:
+  switch:
+    - name: Water Pump Switch
+      unique_id: pump_001
+      icon: mdi:pump
+      optimistic: false
+      state_topic: "homeassistant/switch/pump_001/state"
+      command_topic: "homeassistant/switch/pump_001/set"
+      value_template: "{{ value_json.value }}"
+      payload_on: true
+      payload_off: false
+
+  sensor:
+    - name: Battery Voltage
+      unique_id: battery_voltage_001
+      icon: mdi:battery-high
+      unit_of_measurement: V
+      state_topic: "homeassistant/sensor/voltage_001/state"
+      value_template: "{{ value_json['value'].battery | float}}"
+      device_class: voltage
+
+    - name: Solar Voltage
+      unique_id: solar_voltage_001
+      icon: mdi:solar-power-variant-outline
+      unit_of_measurement: "V"
+      state_topic: "homeassistant/sensor/voltage_001/state"
+      value_template: "{{ value_json['value'].solar | float}}"
+      device_class: voltage
+
+    - name: Water Pump Flow
+      unique_id: water_pump_flow_001
+      icon: mdi:air-filter
+      unit_of_measurement: "L"
+      state_topic: "homeassistant/sensor/water_001/state"
+      value_template: "{{ value_json.value | float}}"
+      device_class: water
+
+    - name: Groud Moisture
+      unique_id: groud_moisture_001
+      icon: mdi:water-percent
+      unit_of_measurement: "%"
+      state_topic: "homeassistant/sensor/moisture_001/state"
+      value_template: "{{ value_json.value | float}}"
+      device_class: moisture
+
+    - name: Air Temperature
+      unique_id: air_temperature_001
+      icon: mdi:temperature-celsius
+      unit_of_measurement: "°C"
+      state_topic: "homeassistant/sensor/humidity_001/state"
+      value_template: "{{ value_json['value'].temperature | float}}"
+      device_class: temperature
+
+    - name: Air Humidity
+      unique_id: air_humidity_001
+      icon: mdi:cloud-percent
+      unit_of_measurement: "%"
+      state_topic: "homeassistant/sensor/humidity_001/state"
+      value_template: "{{ value_json['value'].humidity | float}}"
+      device_class: humidity
+
+    - name: ZTE Modem SMS Amount
+      unique_id: zte_modem_sms_amount
+      icon: mdi:message-processing
+      state_topic: "homeassistant/custom/zte_modem_sms/state"
+      value_template: "{{ value_json.value | length }}"
+      state_class: measurement
+
+    - name: ZTE Modem SMS Text
+      unique_id: zte_modem_sms_text
+      icon: mdi:message-processing
+      state_topic: "homeassistant/custom/zte_modem_sms/state"
+      value_template: "{{ value_json.value | map(attribute='content')|join(',')}}"
+      state_class: measurement
+

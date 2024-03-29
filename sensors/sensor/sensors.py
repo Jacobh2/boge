@@ -10,7 +10,7 @@ import time
 
 from sensor.humidity import get_humidity
 from sensor.moisture import Moisture
-from sensor.relay import Relay
+from boge.sensors.sensor.switch import Relay
 from sensor.voltage import Voltage
 from sensor.water import Waterflow
 from database import Database

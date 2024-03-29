@@ -1,4 +1,5 @@
-from functools import lru_cache
+from settings import Settings
+from mqtt import MQTT
 from sensor.sensor import Sensor
 from time import sleep
 import logging
@@ -7,11 +8,11 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class Humidity(Sensor):
-    ERROR_IN_ROW_LIMIT = 10
+class Humidity(MQTT, Sensor):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, settings: Settings):
+        super().__init__(settings)
+        Sensor.__init__(self)
         import adafruit_dht
         import board
 
@@ -32,7 +33,7 @@ class Humidity(Sensor):
         except RuntimeError:
             self.errors_in_row_temperature += 1
             self.last_temperature_read_ok = False
-            if self.errors_in_row_temperature > self.ERROR_IN_ROW_LIMIT:
+            if self.errors_in_row_temperature > self.max_retries:
                 logger.warning(
                     "Failed to read temperature after %s",
                     self.errors_in_row_temperature,
@@ -48,53 +49,59 @@ class Humidity(Sensor):
         except RuntimeError:
             self.errors_in_row_humidity += 1
             self.last_humidity_read_ok = False
-            if self.errors_in_row_humidity > self.ERROR_IN_ROW_LIMIT:
+            if self.errors_in_row_humidity > self.max_retries:
                 logger.warning(
                     "Failed to read humidity after %s",
                     self.errors_in_row_humidity,
                     exc_info=True,
                 )
         return self.prev_humidity
-
-    def run(self):
-        while self.running:
-            self.try_get_temperature()
-            sleep(5)
-            self.try_get_humidity()
-            sleep(30)
-
+    
+    def _shutdown(self):
         logger.info("Shutting down")
         try:
             self.device.exit()
         except Exception:
             pass
 
-    def shutdown(self):
-        self.running = False
+    def run(self):
+        self.connect()
 
-    def get_temperature(self):
-        return self.prev_temperature
+        while self.running:
+            try:
+                temperature = self.try_get_temperature()
+                sleep(5)
+                humidity = self.try_get_humidity()
 
-    def get_humidity(self):
-        return self.prev_humidity
+                # Publish!
+                self.publish({"temperature": temperature, "humidity": humidity})
+                self.retries = 0
+            except Exception:
+                logger.warning("Failed to read humidity or temperature", exc_info=True)
+                self.retries += 1
+            finally:
+                sleep(30)
 
-    def get_temperature_status(self) -> bool:
-        logger.info(
-            "Temperature status: Errors=%s and is alive=%s",
-            self.errors_in_row_temperature,
-            self.is_alive(),
-        )
-        return self.last_temperature_read_ok == 0 and self.is_alive()
+            if self.retries > self.max_retries:
+                self.running = False
+                
 
-    def get_humidity_status(self) -> bool:
-        logger.info(
-            "Humidity status: Errors=%s and is alive=%s",
-            self.errors_in_row_humidity,
-            self.is_alive(),
-        )
-        return self.last_humidity_read_ok == 0 and self.is_alive()
+        self._shutdown()
+
+        raise Exception(f"Have retried {self.retries} times, will crash and let docker restart us!")
 
 
-@lru_cache()
-def get_humidity() -> Humidity:
-    return Humidity()
+if __name__ == "__main__":
+    from log import setup_logging
+
+    settings = Settings()
+
+    setup_logging(settings)
+
+    switch = Humidity(settings)
+
+    logger.info("Starting humidity")
+    switch.start()
+
+    logger.info("Waiting for join")
+    switch.join()
