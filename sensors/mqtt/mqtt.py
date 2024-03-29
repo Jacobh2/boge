@@ -11,6 +11,9 @@ settings = Settings()
 def on_connect(client, userdata, flags, reason_code, properties):
     if reason_code == 0:
         print("Connected to MQTT Broker!")
+        # Subscribe to swtich return topic
+        client.subscribe(f"{settings.MQTT_TOPIC}/on")
+        client.subscribe(f"{settings.MQTT_TOPIC}/off")
     else:
         print("Failed to connect, return code %d\n", reason_code)
 
@@ -18,6 +21,12 @@ def on_connect(client, userdata, flags, reason_code, properties):
 # Callback when the client receives a CONNACK response from the server.
 def on_message(client, userdata, msg):
     print("Message Published...:", msg)
+    if msg.topic == f"{settings.MQTT_TOPIC}/on":
+        print("Switch on!")
+    elif msg.topic == f"{settings.MQTT_TOPIC}/off":
+        print("Switch off!")
+    else:
+        print("Other topic")
 
 
 # Set up the MQTT client
@@ -41,7 +50,7 @@ try:
             "time": time.time(),
             "status": True
         })
-        result = client.publish(settings.MQTT_TOPIC, message)
+        result = client.publish(f"{settings.MQTT_TOPIC}/state", message)
 
         print("Result:", result)
 

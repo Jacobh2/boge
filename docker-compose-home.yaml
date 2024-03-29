@@ -30,7 +30,7 @@ services:
     environment:
       - MQTT_BROKER=localhost
       - MQTT_PORT=1883
-      - MQTT_TOPIC=homeassistant/relay/pump_001/state
+      - MQTT_TOPIC=homeassistant/switch/pump_001
       - MQTT_CLIENT_ID=pump_001
       - MQTT_USER=sensors
     env_file:
