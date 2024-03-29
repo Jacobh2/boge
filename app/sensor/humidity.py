@@ -22,6 +22,7 @@ class Humidity(Sensor):
         self.errors_in_row_humidity = 0
         self.last_temperature_read_ok = False
         self.last_humidity_read_ok = False
+        self.running = True
 
     def try_get_temperature(self):
         try:
@@ -56,11 +57,20 @@ class Humidity(Sensor):
         return self.prev_humidity
 
     def run(self):
-        while True:
+        while self.running:
             self.try_get_temperature()
             sleep(5)
             self.try_get_humidity()
             sleep(30)
+
+        logger.info("Shutting down")
+        try:
+            self.device.exit()
+        except Exception:
+            pass
+
+    def shutdown(self):
+        self.running = False
 
     def get_temperature(self):
         return self.prev_temperature

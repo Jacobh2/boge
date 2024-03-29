@@ -36,6 +36,7 @@ async def lifespan(app: FastAPI):
     yield
 
     scheduler.stop()
+    sensors.stop_all()
 
 
 app = FastAPI(lifespan=lifespan)
