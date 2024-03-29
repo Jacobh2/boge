@@ -25,6 +25,8 @@ services:
   relay:
     build: sensors
     command: [tail, -f, /dev/null]
+    privileged: true
+    restart: always
     environment:
       - MQTT_BROKER=mqtt
       - MQTT_PORT=1883
