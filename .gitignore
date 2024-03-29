@@ -5,3 +5,4 @@ __pycache__
 .DS_Store
 *.log
 home_assistant_config
+mosquitto/password_file/password.txt
