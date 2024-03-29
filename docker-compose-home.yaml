@@ -29,10 +29,11 @@ services:
     restart: always
     network_mode: host
     environment:
-      - MQTT_BROKER=mqtt
+      - MQTT_BROKER=localhost
       - MQTT_PORT=1883
       - MQTT_TOPIC=homeassistant/relay/pump_001/state
       - MQTT_CLIENT_ID=pump_001
       - MQTT_USER=sensors
     env_file:
       - .env
+    network_mode: host
