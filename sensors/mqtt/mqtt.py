@@ -15,17 +15,17 @@ def on_connect(client, userdata, flags, rc):
 
 
 # Callback when the client receives a CONNACK response from the server.
-def on_publish(client, userdata, mid):
-    print("Message Published...")
+def on_message(client, userdata, msg):
+    print("Message Published...:", msg)
 
 
 # Set up the MQTT client
-client = mqtt.Client(settings.MQTT_CLIENT_ID)
+client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.username_pw_set(
     settings.MQTT_USER, settings.MQTT_PASSWORD
 )  # Set authentication if needed
 client.on_connect = on_connect
-client.on_publish = on_publish
+client.on_message = on_message
 
 # Connect to the MQTT broker
 client.connect(settings.MQTT_BROKER, settings.MQTT_PORT, keepalive=60)
