@@ -1,10 +1,13 @@
 import json
 import time
 import paho.mqtt.client as mqtt
+from paho.mqtt.client import MQTTMessage
 from settings import Settings
 
 
 settings = Settings()
+
+status = True
 
 
 # Callback when connecting to the MQTT broker
@@ -18,12 +21,28 @@ def on_connect(client, userdata, flags, reason_code, properties):
 
 
 # Callback when the client receives a CONNACK response from the server.
-def on_message(client, userdata, msg):
+def on_message(client, userdata, msg: MQTTMessage):
+    global status
+
     print("Message Published...:", msg)
     if msg.topic == f"{settings.MQTT_TOPIC}/set":
         print("Switch!")
-        print("Data:", userdata)
-        print("Msg:", msg)
+        print("Msg:", msg.state, msg.info, msg.payload)
+        print("*"*100)
+
+        # Fake work
+        time.sleep(2)
+        status = not status
+        # Say that it is updated
+        publish(client, status)
+
+
+def publish(client, switch):
+    message = json.dumps({
+            "time": time.time(),
+            "status": switch
+        })
+    return client.publish(f"{settings.MQTT_TOPIC}/state", message)
 
 
 # Set up the MQTT client
@@ -43,18 +62,12 @@ client.loop_start()
 try:
     # Send a message every 10 seconds
     while True:
-        message = json.dumps({
-            "time": time.time(),
-            "status": True
-        })
-        result = client.publish(f"{settings.MQTT_TOPIC}/state", message)
-
-        print("Result:", result)
+        result = publish(client, status)
 
         # result: [0, 1]
         status = result[0]
         if status == 0:
-            print(f"Send `{message}` to topic `{settings.MQTT_TOPIC}`")
+            print(f"Send `{status}` to topic `{settings.MQTT_TOPIC}`")
         else:
             print(f"Failed to send message to topic {settings.MQTT_TOPIC}")
 
