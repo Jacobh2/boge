@@ -1,0 +1,6 @@
+pydantic_settings
+adafruit-circuitpython-dht
+#RPi.GPIO # <<- will be instaleld by automationhat
+smbus
+automationhat
+paho-mqtt
