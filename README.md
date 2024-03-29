@@ -71,3 +71,15 @@ http:
     - 127.0.0.1
     - ::1
 ```
+
+## mqtt
+
+Create password for user:
+
+1. exec into mqtt container
+
+2. run
+
+    ```bash
+    mosquitto_passwd -c /mosquitto/config/password.txt sensors
+    ```

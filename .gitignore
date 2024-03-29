@@ -7,4 +7,4 @@ __pycache__
 home_assistant_config
 mosquitto/password_file/password.txt
 mosquitto/config/password.txt
-
+.env
