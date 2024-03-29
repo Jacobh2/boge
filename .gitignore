@@ -6,3 +6,5 @@ __pycache__
 *.log
 home_assistant_config
 mosquitto/password_file/password.txt
+mosquitto/config/password.txt
+

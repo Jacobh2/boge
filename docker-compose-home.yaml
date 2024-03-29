@@ -7,7 +7,6 @@ services:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
       - ./mosquitto/log:/mosquitto/log
-      - ./mosquitto/password_file:/mosquitto/password_file
     restart: always
     network_mode: host
 
