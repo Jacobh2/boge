@@ -27,6 +27,7 @@ services:
     command: [tail, -f, /dev/null]
     privileged: true
     restart: always
+    network_mode: host
     environment:
       - MQTT_BROKER=mqtt
       - MQTT_PORT=1883

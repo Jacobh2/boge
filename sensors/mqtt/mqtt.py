@@ -1,3 +1,4 @@
+import json
 import time
 import paho.mqtt.client as mqtt
 from settings import Settings
@@ -7,11 +8,11 @@ settings = Settings()
 
 
 # Callback when connecting to the MQTT broker
-def on_connect(client, userdata, flags, rc):
-    if rc == 0:
+def on_connect(client, userdata, flags, reason_code, properties):
+    if reason_code == 0:
         print("Connected to MQTT Broker!")
     else:
-        print("Failed to connect, return code %d\n", rc)
+        print("Failed to connect, return code %d\n", reason_code)
 
 
 # Callback when the client receives a CONNACK response from the server.
@@ -22,7 +23,7 @@ def on_message(client, userdata, msg):
 # Set up the MQTT client
 client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
 client.username_pw_set(
-    settings.MQTT_USER, settings.MQTT_PASSWORD
+    settings.MQTT_USER, settings.MQTT_PASSWORD.get_secret_value()
 )  # Set authentication if needed
 client.on_connect = on_connect
 client.on_message = on_message
@@ -36,7 +37,10 @@ client.loop_start()
 try:
     # Send a message every 10 seconds
     while True:
-        message = "Hello MQTT!"  # Replace with your message
+        message = json.dumps({
+            "time": time.time(),
+            "status": True
+        })
         result = client.publish(settings.MQTT_TOPIC, message)
 
         print("Result:", result)
