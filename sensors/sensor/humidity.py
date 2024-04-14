@@ -16,7 +16,7 @@ class Humidity(MQTT, Sensor):
         import adafruit_dht
         import board
 
-        self.device = adafruit_dht.DHT22(board.D4)
+        self.device = adafruit_dht.DHT22(board.D17)
         self.prev_humidity = None
         self.prev_temperature = None
         self.errors_in_row_temperature = 0
