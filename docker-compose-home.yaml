@@ -118,17 +118,33 @@ services:
       - .env
     network_mode: host
 
-  sms_sensor:
+  # sms_sensor:
+  #   build: sensors
+  #   container_name: sms
+  #   command: [python, -m, sensor.delete_sms]
+  #   privileged: true
+  #   restart: always
+  #   environment:
+  #     - MQTT_BROKER=localhost
+  #     - MQTT_PORT=1883
+  #     - MQTT_TOPIC=homeassistant/custom/zte_modem_sms
+  #     - MQTT_CLIENT_ID=zte_modem_sms
+  #     - MQTT_USER=sensors
+  #   env_file:
+  #     - .env
+  #   network_mode: host
+
+  lte_usage:
     build: sensors
     container_name: sms
-    command: [python, -m, sensor.delete_sms]
+    command: [python, -m, sensor.lte_usage]
     privileged: true
     restart: always
     environment:
       - MQTT_BROKER=localhost
       - MQTT_PORT=1883
-      - MQTT_TOPIC=homeassistant/custom/zte_modem_sms
-      - MQTT_CLIENT_ID=zte_modem_sms
+      - MQTT_TOPIC=homeassistant/sensor/usb0_usage
+      - MQTT_CLIENT_ID=usb0_usage
       - MQTT_USER=sensors
     env_file:
       - .env

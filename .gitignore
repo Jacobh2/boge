@@ -12,4 +12,4 @@ influxdb/
 influxdb
 influxdb/data
 influxdb/config
-
+.vscode
