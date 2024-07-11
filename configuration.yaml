@@ -60,7 +60,7 @@ mqtt:
       unit_of_measurement: V
       state_topic: "homeassistant/sensor/voltage_001/state"
       value_template: "{{ value_json['value'].battery | float}}"
-      device_class: voltage
+      device_class: battery
 
     - name: Solar Voltage
       unique_id: solar_voltage_001
@@ -102,17 +102,33 @@ mqtt:
       value_template: "{{ value_json['value'].humidity | float}}"
       device_class: humidity
 
-    - name: ZTE Modem SMS Amount
-      unique_id: zte_modem_sms_amount
-      icon: mdi:message-processing
-      state_topic: "homeassistant/custom/zte_modem_sms/state"
-      value_template: "{{ value_json.value | length }}"
-      state_class: measurement
+    # - name: ZTE Modem SMS Amount
+    #   unique_id: zte_modem_sms_amount
+    #   icon: mdi:message-processing
+    #   state_topic: "homeassistant/custom/zte_modem_sms/state"
+    #   value_template: "{{ value_json.value | length }}"
+    #   state_class: measurement
 
-    - name: ZTE Modem SMS Text
-      unique_id: zte_modem_sms_text
-      icon: mdi:message-processing
-      state_topic: "homeassistant/custom/zte_modem_sms/state"
-      value_template: "{{ value_json.value | map(attribute='content')|join(',')}}"
-      state_class: measurement
+    # - name: ZTE Modem SMS Text
+    #   unique_id: zte_modem_sms_text
+    #   icon: mdi:message-processing
+    #   state_topic: "homeassistant/custom/zte_modem_sms/state"
+    #   value_template: "{{ value_json.value | map(attribute='content')|join(',')}}"
+    #   state_class: measurement
+
+    - name: LTE Usage RX
+      unique_id: lte_usage_rx
+      icon: mdi:wifi-arrow-down
+      unit_of_measurement: "B"
+      state_topic: "homeassistant/sensor/usb0_usage/state"
+      value_template: "{{ value_json['value'].rx | float}}"
+      device_class: data_size
+
+    - name: LTE Usage TX
+      unique_id: lte_usage_tx
+      icon: mdi:wifi-arrow-up
+      unit_of_measurement: "B"
+      state_topic: "homeassistant/sensor/usb0_usage/state"
+      value_template: "{{ value_json['value'].tx | float}}"
+      device_class: data_size
 
