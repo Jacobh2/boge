@@ -8,7 +8,7 @@ RUN pip install --user -r requirements.txt
 
 FROM arm64v8/python:3.11-slim
 
-RUN apt-get update && apt-get install -y libgpiod2 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libgpiod2 net-tools && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/app/src
 

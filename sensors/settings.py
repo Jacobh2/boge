@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     LOG_FORMAT: str = "%(asctime)s:[%(levelname)s]:%(name)s:%(message)s"
     DEBUG: bool = False
 
+    SLEEP_TIME: int = 30
+
     VERSION: str = "?"
 
     DEVICE_ID: str = ""
