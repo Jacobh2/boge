@@ -136,7 +136,7 @@ services:
 
   lte_usage:
     build: sensors
-    container_name: sms
+    container_name: lte_usage
     command: [python, -m, sensor.lte_usage]
     privileged: true
     restart: always
