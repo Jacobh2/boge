@@ -42,6 +42,16 @@ sudo nginx -t
 ln -s /etc/nginx/sites-available/www.example.org.conf /etc/nginx/sites-enabled/
 ```
 
+## Deactivate site
+
+Simply remove the symlink using rm
+
+## Check logs
+
+```
+tail -f /var/log/nginx/access.log
+```
+
 ## To map multiple ports:
 
 
