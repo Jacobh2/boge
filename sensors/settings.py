@@ -1,3 +1,4 @@
+from pathlib import Path
 from pydantic_settings import BaseSettings
 from pydantic import SecretStr
 
@@ -23,6 +24,9 @@ class Settings(BaseSettings):
     MOISTURE_HIGH: float = 4.966
     MOISTURE_LOW: float = 2.0
     MOISTURE_ROUND: int = 10
+
+    # Local file store
+    LOCAL_FILE_STORE_PATH: Path = "./cache.txt"
 
     MQTT_BROKER: str
     MQTT_PORT: int
