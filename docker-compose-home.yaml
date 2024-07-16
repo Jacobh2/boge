@@ -158,7 +158,9 @@ services:
       - MQTT_TOPIC=homeassistant/sensor/usb0_usage
       - MQTT_CLIENT_ID=usb0_usage
       - MQTT_USER=sensors
-      - LOCAL_FILE_STORE_PATH=./usb0_usage_cache.json
+      - LOCAL_FILE_STORE_PATH=/tmp/cache/usb0_usage_cache.json
+    volumes:
+      - ./cache:/tmp/cache
     env_file:
       - .env
     network_mode: host
