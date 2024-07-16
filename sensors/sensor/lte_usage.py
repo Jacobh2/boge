@@ -28,6 +28,10 @@ class USB0Usage(MQTT, Sensor):
         # Run the ifconfig command
         result = subprocess.run(["ifconfig"], stdout=subprocess.PIPE)
 
+        if result.returncode != 0:
+            logger.warning("The subprocess did not return code 0: %s", result)
+            return None, None
+
         logger.info("Result from command: %s", result)
 
         # Decode the byte string to a regular string
@@ -89,10 +93,27 @@ class USB0Usage(MQTT, Sensor):
         tx_bytes = 0
 
         if existing := self._setup_cache():
-            rx_bytes, tx_bytes = existing
+            maybe_rx_bytes, maybe_tx_bytes = existing
             logger.info(
                 "Found existing data, starting at rx=%s & tx=%s", rx_bytes, tx_bytes
             )
+            # Now we need to check if this existing data actually should be used:
+            # Only if the read data is less than the stored data. Otherwise it
+            # can be that we have been restarted without the raspberry pi being
+            # restarted, hence we will already have the correct values when reading.
+            # So we only store/use the data if it less than the last read state.
+            current_rx, current_tx = self.get_usb0_data()
+            if current_rx is not None and current_tx is not None:
+                # Check if the read values are below cache,
+                # if so, then use it!
+                logger.info("Current values are rx=%s, tx=%s", current_rx, current_tx)
+                logger.info("Last cache is rx=%s & tx=%s", maybe_rx_bytes, maybe_tx_bytes)
+                if current_rx < maybe_rx_bytes and current_tx < maybe_tx_bytes:
+                    logger.info("Current is less than cache, so setting cache as base")
+                    rx_bytes = maybe_rx_bytes
+                    tx_bytes = maybe_tx_bytes
+                else:
+                    logger.info("Current is more or equal to cache, so skip setting a new base")
 
         last_save_time = 0
 
