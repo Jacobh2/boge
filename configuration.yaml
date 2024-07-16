@@ -13,6 +13,7 @@ scene: !include scenes.yaml
 homeassistant:
   external_url: https://icehack.asuscomm.com
   internal_url: http://192.168.1.233:8123
+  time_zone: Europe/Stockholm
 
 recorder:
   purge_keep_days: 10
@@ -40,6 +41,7 @@ influxdb:
   tags_attributes:
     - friendly_name
 
+python_script:
 
 mqtt:
   switch:
@@ -116,19 +118,19 @@ mqtt:
     #   value_template: "{{ value_json.value | map(attribute='content')|join(',')}}"
     #   state_class: measurement
 
-    - name: LTE Usage RX
-      unique_id: lte_usage_rx
+    - name: LTE Usage RX MB
+      unique_id: lte_usage_rx_mb
       icon: mdi:wifi-arrow-down
-      unit_of_measurement: "B"
+      unit_of_measurement: "MB"
       state_topic: "homeassistant/sensor/usb0_usage/state"
-      value_template: "{{ value_json['value'].rx | float}}"
+      value_template: "{{ (value_json['value'].rx | float) / 1024 / 1024 | round(2) }}"
       device_class: data_size
 
-    - name: LTE Usage TX
-      unique_id: lte_usage_tx
+    - name: LTE Usage TX MB
+      unique_id: lte_usage_tx_mb
       icon: mdi:wifi-arrow-up
-      unit_of_measurement: "B"
+      unit_of_measurement: "MB"
       state_topic: "homeassistant/sensor/usb0_usage/state"
-      value_template: "{{ value_json['value'].tx | float}}"
+      value_template: "{{ (value_json['value'].tx | float) / 1024 / 1024 | round(2) }}"
       device_class: data_size
 

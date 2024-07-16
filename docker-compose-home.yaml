@@ -37,6 +37,18 @@ services:
       - /run/dbus:/run/dbus:ro
     restart: always
     network_mode: host
+    
+  # file_editor:
+  #   image: causticlab/hass-configurator-docker:0.5.2
+  #   container_name: configurator
+  #   restart: always
+  #   environment:
+  #     - BASEPATH=/home/docker/homeassistant/.homeassistant
+  #     - ENFORCE_BASEPATH=true
+  #   volumes:
+  #     - ./configurator:/config
+  #     - ./home_assistant_config:/home/docker/homeassistant/.homeassistant
+  #   network_mode: host
 
   switch:
     build: sensors
